@@ -30,19 +30,8 @@ int main() {
 		if (H % K == 0) temp_per_price -= 1;
 
 		long long temp_price = P;
+		temp_price = P + (temp_per_price * (temp_per_price + 1) / 2) * C;
 		
-		if (temp_per_price >= 2) {
-			temp_price = P + (temp_per_price * (temp_per_price + 1) / 2) * C;
-		}
-		else {
-			if (temp_per_price == 1) {
-				temp_price = P+C;
-			}
-			else {
-				temp_price = P;
-			}
-		}
-
 		// cout << i << " " << temp_price << "\n";
 		if (min_price > temp_price) {
 			min_price = temp_price;
