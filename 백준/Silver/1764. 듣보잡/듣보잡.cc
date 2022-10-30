@@ -51,7 +51,7 @@ int main(int argc, char** argv)
             if (it_dud != N) {
                 it_dud++;
             }
-            if (it_bo != N) {
+            if (it_bo != M) {
                 it_bo++;
             }
             cnt++;
