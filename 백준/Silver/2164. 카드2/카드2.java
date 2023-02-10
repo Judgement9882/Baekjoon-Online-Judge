@@ -11,11 +11,9 @@ public class Main{
 			q.add(i);
 		}
 		
-		ArrayDeque<Integer> temp = new ArrayDeque<>();
 		while(!(q.size()==1)) {
 			q.poll();
-			temp.add(q.poll());
-			q.add(temp.poll());
+			q.add(q.poll());
 		}
 		System.out.println(q.poll());
 	}
