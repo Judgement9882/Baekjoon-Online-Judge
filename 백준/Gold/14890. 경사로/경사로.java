@@ -23,18 +23,18 @@ public class Main{
             // 높이가 2 이상 차이날떄
             if (Math.abs(arr[i] - arr[i + 1]) > 1) return false; 
             
-            // 올라가는 경우
+            // 내려가는 경우
             if (arr[i] - 1 == arr[i + 1]) { 
             	// 다음 수부터 L번째까지 확인
                 for (int j = i + 1; j <= i + L; j++) {
                 	// 만약 범위를 벗어나거나, 경사로로 썼거나, 값이 달라지는 경우
-                    if (j >= N || isused[j] || arr[i + 1] != arr[j]) return false;
+                    if (j >= N || arr[i + 1] != arr[j]) return false;
                     
                     // 조건 만족 시 경사로 사용
                     isused[j] = true;
                 } 
             }
-            // 내려가는 경우
+            // 올라가는 경우
             else { 
             	// 이전수를 확인
             	for (int j = i; j >= i-L+1; j--) {
