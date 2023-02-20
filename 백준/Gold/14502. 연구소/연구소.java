@@ -33,10 +33,10 @@ public class Main{
 		max_cnt = Math.max(max_cnt, cnt);
 	}
 	
-	static void bfs() {
+	static void bfs(int x, int y) {
 		// 큐에 미리 받아둔 바이러스를 삽입
 		ArrayDeque<int[]> q = new ArrayDeque<>();
-		for(int[] temp : virus) q.offer(temp);
+		q.offer(new int[] {x, y});
 		
 		while(!q.isEmpty()) { // q가 빌 때 까지 반복
 			int[] cur = q.poll();
@@ -56,11 +56,29 @@ public class Main{
 		}
 	}
 	
+	static void dfs(int x, int y) {
+		for (int dir = 0; dir < 4; dir++) {
+			int nx = dx[dir] + x;
+			int ny = dy[dir] + y;
+
+			// 범위 이탈
+			if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+			// 바이러스이거나 벽일때
+			if (copy_board[nx][ny] == 2 || copy_board[nx][ny] == 1) continue;
+
+			copy_board[nx][ny] = 2;
+			dfs(nx, ny);
+		}
+	}
+	
 	static void comb(int cnt, int start) {
 		// 벽이 3개 세워지면 영역 체크
 		if (cnt == 3) { 
 			board_init(); // 지도 복사
-			bfs(); // 영역 체크
+			for(int[] temp : virus) {
+//				bfs(temp[0], temp[1]); // 영역 체크
+				dfs(temp[0], temp[1]); // 영역 체크
+			}
 			solve(); // 안전영역 크기구하기
 			return;
 		}
