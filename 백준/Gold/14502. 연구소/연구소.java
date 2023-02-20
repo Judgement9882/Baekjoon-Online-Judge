@@ -3,8 +3,8 @@ import java.io.*;
 
 public class Main{
 
-	static int[][] board = new int[10][10]; // 지도
-	static int[][] copy_board = new int[10][10]; // 복사 지도
+	static int[][] board;// 지도
+	static int[][] copy_board; // 복사 지도
 	static List<int[]> canWall= new ArrayList<>(); // 벽으로 사용될 수 있는 칸
 	static List<int[]> virus= new ArrayList<>(); 
 	
@@ -98,7 +98,10 @@ public class Main{
 		
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
-		int index = 0;
+		
+		board = new int[N][M];
+		copy_board = new int[N][M];
+		
 		for(int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j = 0 ; j < M; j++) {
