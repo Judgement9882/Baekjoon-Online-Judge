@@ -4,11 +4,7 @@ public class Main{
 	static int N, r, c, num, ans;
 	static void cut (int x, int y, int size) {
 		if(size == 1) {
-			if(x == r && y == c){
-				System.out.println(num);
-				System.exit(0);
-			}
-			else num++; 
+			if(x == r && y == c) ans = num;
 			return;
 		}
 		int half = size/2;
@@ -39,6 +35,7 @@ public class Main{
 		c = Integer.parseInt(st.nextToken());
 		num = 0;
 		cut(0, 0, 2 << N);
+		System.out.println(ans);
 		br.close();
 	}
 }
