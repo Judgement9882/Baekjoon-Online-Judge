@@ -20,7 +20,7 @@ public class Main{
 		
 		while(board[K] == 0) {
 			int cur = q.poll();
-			int [] temp = {cur-1, cur+1, cur*2}; 
+			int [] temp = {cur+1, cur-1, cur*2}; 
 			
 			for(int i : temp) {
 				// 범위 이탈
