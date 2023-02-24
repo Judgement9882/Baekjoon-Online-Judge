@@ -42,8 +42,6 @@ public class Main{
 			// 범위 밖, 방문, 이전과 같지 않을 경우 continue
 			if(checkRangeOut(nx, ny)) continue;
 			if(v[nx][ny] || board[nx][ny] != board[x][y]) continue;
-			
-			v[nx][ny] = true;
 			dfs(nx, ny, v, board);
 		}
 	}
