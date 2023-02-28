@@ -46,9 +46,9 @@ public class Main{
 					
 					// 삭제
 					for(int a : tmp) {
-						int ax = horse.get(a-1)[0];
-						int ay = horse.get(a-1)[1];
-						stackHorse[ax][ay].remove((Integer) a);
+						//int ax = horse.get(a-1)[0];
+						//int ay = horse.get(a-1)[1];
+						stackHorse[x][y].remove((Integer) a);
 						// 삭제 후 horse의 좌표 변경
 						horse.get(a-1)[0] = nx;
 						horse.get(a-1)[1] = ny;
@@ -71,9 +71,9 @@ public class Main{
 					
 					// 제거
 					for(int a : tmp) {
-						int ax = horse.get(a-1)[0];
-						int ay = horse.get(a-1)[1];
-						stackHorse[ax][ay].remove((Integer) a);
+						//int ax = horse.get(a-1)[0];
+						//int ay = horse.get(a-1)[1];
+						stackHorse[x][y].remove((Integer) a);
 						// horse 좌표에 반영
 						horse.get(a-1)[0] = nx;
 						horse.get(a-1)[1] = ny;
