@@ -44,8 +44,6 @@ public class Main {
 		int start = Integer.parseInt(st.nextToken());
 		int end = Integer.parseInt(st.nextToken());
 		
-		long res = 0, cnt = 0;
-		
 		dist[start] = 0;
 		
 		for(int i = 1; i <= N; i++) {
