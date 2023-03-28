@@ -4,11 +4,7 @@ public class Main {
 	public static void main(String[] args) throws Exception{
 		BufferedReader br= new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
-		if(N==1) {
-			System.out.println(1);
-			System.exit(0);
-		}
-		int []dp = new int[N+1];
+		int []dp = new int[N+2];
 		dp[1] = 1;
 		dp[2] = 3;
 		for(int i = 3; i <= N; i++) {
