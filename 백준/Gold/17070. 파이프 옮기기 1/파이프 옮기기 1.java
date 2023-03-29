@@ -3,57 +3,37 @@ import java.util.*;
 public class Main {
 	static int [] dx = {0, 1, 1}, dy = {1, 1, 0};
 	static int[][] board;
-	static int N, cnt;
-	static void dfs(int x, int y, int state) {
-		
-		if(x == N-1 && y == N-1) {
-			cnt++;
-			return;
-		}
-		
-		if(state == 0) { // 동쪽
-			if(y+1<N &&board[x][y+1] == 0) {
-				dfs(x, y+1, 0);
-			}
-			if(x+1 < N && y+1 < N && board[x][y+1] == 0 && board[x+1][y+1] == 0 && board[x+1][y] == 0) {
-				dfs(x+1, y+1, 1);
-			}
-		}
-		else if (state == 1) { // 남동쪽
-			if(y+1 < N &&board[x][y+1] == 0) {
-				dfs(x, y+1, 0);
-			}
-			if(x+1 < N && y+1 < N && board[x][y+1] == 0 && board[x+1][y+1] == 0 && board[x+1][y] == 0) {
-				dfs(x+1, y+1, 1);
-			}
-			if(x+1 < N && board[x+1][y] == 0) {
-				dfs(x+1, y, 2);
-			}
-		}
-		else { // 남쪽
-			if(x+1 < N && y+1 < N && board[x][y+1] == 0 && board[x+1][y+1] == 0 && board[x+1][y] == 0) {
-				dfs(x+1, y+1, 1);
-			}
-			if(x+1 < N && board[x+1][y] == 0) {
-				dfs(x+1, y, 2);
-			}
-		}
-		
-	}
+	static int[][][] dp;
+	static int N;
 	
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
-		board = new int[N][N];
-		for(int i = 0 ; i < N; i++) {
+		board = new int[N+1][N+1];
+		dp = new int[N+1][N+1][3];
+		for(int i = 1 ; i <= N; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-			for(int j = 0; j < N; j++) {
+			for(int j = 1; j <= N; j++) {
 				board[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
-		cnt = 0;
-		dfs(0, 1, 0);
-		System.out.println(cnt);
+		
+		dp[1][2][0] = 1;
+		for(int i = 1 ; i <= N; i++) {
+			for(int j = 3; j <= N; j++) {
+				if(board[i][j]==0) {
+					dp[i][j][0] = dp[i][j-1][0]+dp[i][j-1][1];
+					dp[i][j][2] = dp[i-1][j][2]+dp[i-1][j][1];
+				}
+				
+				if(board[i-1][j]==0 && board[i][j-1]==0 && board[i][j]==0) {
+					dp[i][j][1] = dp[i-1][j-1][0] + dp[i-1][j-1][1] + dp[i-1][j-1][2];
+				}
+			}
+		}
+		System.out.println(dp[N][N][0] + dp[N][N][1] +dp[N][N][2]);
+		
+		
 		br.close();
 	}
 }
