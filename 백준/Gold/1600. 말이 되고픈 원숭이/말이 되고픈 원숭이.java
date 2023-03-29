@@ -7,13 +7,13 @@ public class Main {
 	static int[] hy = {1, 2, 2, 1, -1, -2, -2, -1};
 	static int[] dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 	static int K, W, H;
-	static boolean[][][] v;
+	static boolean[][] v;
 	
 	static int bfs(int x, int y) {
 		ArrayDeque<int[]> q = new ArrayDeque<>();
 		
 		board[0][0] = 1;
-		v[0][0][0] = true;
+		v[0][0] = true;
 		// x, y, k, dist
 		q.offer(new int[] {x, y, 0, 1});
 		while(!q.isEmpty()) {
@@ -26,9 +26,9 @@ public class Main {
 					int ny = cur[1] + hy[h];
 					
 					if(nx < 0 || nx >= H || ny < 0 || ny >= W) continue;
-					if(v[nx][ny][cur[2]+1] || board[nx][ny] == -1) continue;
+					if(v[nx*W+ny][cur[2]+1] || board[nx][ny] == -1) continue;
 					// 이미 방문했거나 벽이면 pass
-					v[nx][ny][cur[2]+1] = true;
+					v[nx*W+ny][cur[2]+1] = true;
 					// 점프 횟수와 이동 거리를 넣음
 					q.offer(new int[] {nx, ny, cur[2]+1, cur[3]+1});
 				}
@@ -39,9 +39,9 @@ public class Main {
 				int ny = cur[1] + dy[dir];
 				
 				if(nx < 0 || nx >= H || ny < 0 || ny >= W) continue;
-				if(v[nx][ny][cur[2]] || board[nx][ny] == -1) continue;
+				if(v[nx*W+ny][cur[2]] || board[nx][ny] == -1) continue;
 				// 이미 채워졌거나 벽이면 pass
-				v[nx][ny][cur[2]] = true;
+				v[nx*W+ny][cur[2]] = true;
 				// 점프 횟수와 이동 거리를 넣음
 				q.offer(new int[] {nx, ny, cur[2], cur[3]+1});
 			}
@@ -58,7 +58,7 @@ public class Main {
 		W = Integer.parseInt(st.nextToken());
 		H = Integer.parseInt(st.nextToken());
 		board = new int[H][W];
-		v = new boolean[H][W][K+1];
+		v = new boolean[H*W][K+1];
 		for(int i = 0; i < H; i++) {
 			st = new StringTokenizer(br.readLine(), " ");
 			for(int j = 0; j < W; j++) {
