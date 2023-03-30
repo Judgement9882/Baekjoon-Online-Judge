@@ -2,7 +2,8 @@ import java.io.*;
 import java.util.*;
 public class Main {
 	static int [][] board = new int[9][9];
-	static boolean [][] garo, sero, square;
+	static int [] garo, sero, square;
+	static final int num = (1<<10) -1;
 	
 	static void printBoard() {
 		for(int i = 0; i < 9; i++) {
@@ -21,19 +22,19 @@ public class Main {
 		int x = cnt / 9;
 		int y = cnt % 9;
 		int xy = calc(x, y);
-		
 		if(board[x][y] == 0) {
 			for(int n = 1; n < 10; n++) {
-				if(!garo[x][n] && !sero[y][n] && !square[calc(x, y)][n]) {
+				if( ((garo[x] & (1<<n)) == 0) && ((sero[y] & (1<<n)) == 0) && ((square[calc(x, y)] & (1<<n)) == 0)) {
+//				if(!garo[x][n] && !sero[y][n] && !square[calc(x, y)][n]) {
 					board[x][y] = n;
-					garo[x][n] = true;
-					sero[y][n] = true;
-					square[calc(x, y)][n] = true;
+					garo[x] |= (1<<n);
+					sero[y] |= (1<<n);
+					square[calc(x, y)] |= (1<<n);
 					dfs(cnt+1);
 					board[x][y] = 0;
-					garo[x][n] = false;
-					sero[y][n] = false;
-					square[calc(x, y)][n] = false;
+					garo[x] &= (num ^ (1<<n));
+					sero[y] &= (num ^ (1<<n));
+					square[calc(x, y)] &= (num ^ (1<<n));
 				}
 			}	
 		}
@@ -60,17 +61,17 @@ public class Main {
 	
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		garo = new boolean[9][10];
-		sero = new boolean[9][10];
-		square = new boolean[9][10];
+		garo = new int[9];
+		sero = new int[9];
+		square = new int[9];
 		for(int i = 0; i < 9; i++) {
 			String temp = br.readLine();
 			for(int j = 0; j < 9; j++) {
 				board[i][j] = temp.charAt(j) - '0';
 				if(board[i][j] != 0) {
-					garo[i][board[i][j]] = true;
-					sero[j][board[i][j]] = true;
-					square[calc(i, j)][board[i][j]] = true;	
+					garo[i] |= (1<<board[i][j]);
+					sero[j] |= (1<<board[i][j]);
+					square[calc(i, j)] |= (1<<board[i][j]);	
 				}
 			}
 		}
