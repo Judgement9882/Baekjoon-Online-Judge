@@ -1,105 +1,103 @@
 import java.io.*;
 import java.util.*;
- 
 public class Main {
- 
-    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    public static int[] dirX = new int[] { 0, 0, -1, 1 };
-    public static int[] dirY = new int[] { 1, -1, 0, 0 };
-    public static char[][] map;
-    public static boolean[][][] visited;
-    public static Node start;
-    public static int N, M, ans = Integer.MAX_VALUE;
- 
-    public static void main(String[] args) throws Exception {
- 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        map = new char[N][M];
-        visited = new boolean[64][N][M];
- 
-        for (int i = 0; i < N; i++) {
-            String str = br.readLine();
-            for (int j = 0; j < M; j++) {
-                map[i][j] = str.charAt(j);
-                if (map[i][j] == '0')
-                    start = new Node(i, j, 0, 0);
-            }
-        }
-        System.out.println(bfs());
-    }
- 
-    public static int bfs() {
- 
-        Queue<Node> q = new LinkedList<Node>();
-        q.offer(new Node(start.row, start.col, 0, 0));
-        visited[0][start.row][start.col] = true;
- 
-        while (!q.isEmpty()) {
- 
-            Node node = q.poll();
-            int row = node.row;
-            int col = node.col;
-            int cnt = node.cnt;
-            int key = node.key;
- 
-            if (map[row][col] == '1') {
-                return cnt;
-            }
- 
-            for (int i = 0; i < 4; i++) {
- 
-                int nr = row + dirX[i];
-                int nc = col + dirY[i];
- 
-                if (isBoundary(nr, nc) && map[nr][nc] != '#' && !visited[key][nr][nc]) {
-                    if (map[nr][nc] == '.' || map[nr][nc] == '0' || map[nr][nc] == '1') {
-                        visited[key][nr][nc] = true;
-                        q.offer(new Node(nr, nc, cnt + 1, key));
- 
-                    } else if (map[nr][nc] >= 'a' && map[nr][nc] <= 'z') {
-                        int newKey = 1 << (map[nr][nc] - 'a');
-                        newKey = newKey | key;
-                        if (!visited[newKey][nr][nc]) {
-                            visited[key][nr][nc] = true;
-                            visited[newKey][nr][nc] = true;
-                            q.offer(new Node(nr, nc, cnt + 1, newKey));
-                        }
- 
-                    } else if (map[nr][nc] >= 'A' && map[nr][nc] <= 'Z') {
- 
-                        int door = 1 << (map[nr][nc] - 'A');
-                        if ((key & door) > 0) {
-                            visited[key][nr][nc] = true;
-                            q.offer(new Node(nr, nc, cnt + 1, key));
-                        }
-                    }
-                }
-            }
- 
-        }
-        return -1;
-    }
- 
-    public static boolean isBoundary(int row, int col) {
-        return (row >= 0 && row < N) && (col >= 0 && col < M);
-    }
- 
-}
- 
-class Node {
- 
-    int row;
-    int col;
-    int cnt;
-    int key;
- 
-    public Node(int row, int col, int cnt, int key) {
-        this.row = row;
-        this.col = col;
-        this.cnt = cnt;
-        this.key = key;
-    }
- 
+	static int N, M;
+	static int [] dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
+	static char [][] board;
+	static boolean [][][] v;
+	static Queue<int[]> q = new ArrayDeque<>();	
+	
+	public static void main(String[] args) throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		
+		board = new char[N][M];
+		v = new boolean[N][M][1<<6];
+		
+		for(int i = 0; i < N; i++) {
+			String temp = br.readLine();
+			for(int j = 0; j < M; j++) {
+				board[i][j] = temp.charAt(j);
+				if(board[i][j] == '0') {
+					board[i][j] = '.';
+					// x, y, key, dist
+					v[i][j][0] = true;
+					q.offer(new int[] {i, j, 0, 0});
+				}
+			}
+		}
+		
+		System.out.println(bfs());
+		br.close();
+	}
+	
+	static int bfs() {
+		while(!q.isEmpty()) {
+			int[] cur = q.poll();
+			for(int dir = 0; dir < 4; dir++) {
+				int nx = dx[dir] + cur[0];
+				int ny = dy[dir] + cur[1];
+				
+				if(nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+				// 똑같은 키를 가지고 방문하거나 벽을 만나면
+				if(v[nx][ny][cur[2]] || board[nx][ny] == '#') continue;
+				
+				// 1을 만나면 return
+				if(board[nx][ny] == '1') return cur[3]+1; 
+				
+				
+				// 빈 칸이 아니라면
+				if(board[nx][ny]!='.') {
+					// 문 (대문자)
+					if('A' <= board[nx][ny] && board[nx][ny] <= 'Z') {
+						int key = 1 << (board[nx][ny] - 'A');
+						// 키를 가지고 있다면 이동 가능
+						if((cur[2] & key) != 0) { 
+							v[nx][ny][cur[2]] = true;
+							q.offer(new int[] {nx, ny, cur[2], cur[3]+1});
+						}
+					}
+//					// 열쇠
+					else if('a' <= board[nx][ny] && board[nx][ny] <= 'z') {
+						int key = 1 << (board[nx][ny] - 'a');
+						int newkey = cur[2] | key;
+						
+						if(!v[nx][ny][newkey]) {
+							v[nx][ny][key] = true;
+							v[nx][ny][newkey] = true;
+							q.offer(new int[] {nx, ny, newkey, cur[3]+1});
+						}
+						// 키가 없다면 키를 획득
+//						if((cur[2] & key) == 0) {
+//							cur[2] |= key;
+//							v[nx][ny][cur[2]] = true;
+//							q.offer(new int[] {nx, ny, cur[2], cur[3]+1});
+//							
+//						}
+//						v[nx][ny][cur[2]] = true;
+//						q.offer(new int[] {nx, ny, cur[2], cur[3]+1});
+					}
+				}else { // 빈칸이라면
+					v[nx][ny][cur[2]] = true;
+					q.offer(new int[] {nx, ny, cur[2], cur[3]+1});
+				}
+			}
+			
+//			// 열쇠 칸일 경우
+//			if(97 <= board[cur[0]][cur[1]] && board[cur[0]][cur[1]] <= 122) {
+//				int key = 1 << (board[cur[0]][cur[1]] - 'a');
+//				// 키가 없다면 키를 획득
+//				if((cur[2] & key) == 0) {
+////					System.out.println("키획득 : "+key);
+//					cur[2] |= key;
+//					v[cur[0]][cur[1]][cur[2]] = true;
+//					q.offer(new int[] {cur[0], cur[1], cur[2], cur[3]});
+//				}
+//			}
+		}
+		
+		return -1;
+	}
 }
