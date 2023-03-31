@@ -47,7 +47,7 @@ public class Main {
 				// 똑같은 키를 가지고 방문하거나 벽을 만나면
 				if(v[nx][ny][cur[2]] || board[nx][ny] == '#') continue;
 				
-//				if(min < cur[3]+1) continue;
+				if(min < cur[3]+1) continue;
 				// 1을 만나면 return
 				if(board[nx][ny] == '1') {
 					min= Math.min(min, cur[3]+1);
