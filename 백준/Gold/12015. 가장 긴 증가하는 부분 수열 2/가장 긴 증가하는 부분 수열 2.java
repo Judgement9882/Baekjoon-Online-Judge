@@ -25,7 +25,8 @@ public class Main {
 			}
 			else { // 저장된 수보다 작거나 같을경우 이진탐색
 				int idx = Collections.binarySearch(dp, A[i]);
-				if(idx < 0) dp.set(-(idx+1), A[i]);
+				if(idx < 0) dp.set(Math.abs(idx)-1, A[i]);
+				
 			}
 		}
 		System.out.println(dp.size());
