@@ -11,7 +11,7 @@ public class Main {
 		int [][] g = new int[N+1][N+1];
 		for(int i = 1; i <= N; i++) {
 			for(int j = 1; j <= N; j++) {
-//				if(i==j) continue;
+				if(i==j) continue;
 				g[i][j] = INF;
 			}
 		}
@@ -25,9 +25,9 @@ public class Main {
 		
 		for(int k = 1; k <= N; k++) {
 			for(int i = 1; i <= N; i++) {
-//				if(k==i) continue;
+				if(k==i) continue;
 				for(int j = 1; j <= N; j++) {
-//					if(k==j || i == j) continue;
+					if(k==j || i == j) continue;
 					
 					g[i][j] = Math.min(g[i][j], g[i][k]+g[k][j]);
 				}
@@ -37,7 +37,7 @@ public class Main {
 		int ans = INF;
 		for(int i = 1; i<= N; i++) {
 			for(int j = 1; j <= N; j++) {
-//				if(i==j) continue;
+				if(i==j) continue;
 				if(g[j][i] != INF) { // 사이클이 생기는 경우
 					ans = Math.min(ans, g[i][j] + g[j][i]);
 				}
