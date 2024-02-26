@@ -31,7 +31,7 @@ public class Main {
         long [] vis = new long[N+1];
         int order = 1;
         long [] depth = new long[N+1];
-        for(int i = 1; i <= N; i++)depth[i] = -1;
+//        for(int i = 1; i <= N; i++)depth[i] = -1;
 
         ArrayDeque<int[]> q = new ArrayDeque<>();
         q.offer(new int[] {R, 1});
