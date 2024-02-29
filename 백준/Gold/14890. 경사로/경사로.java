@@ -1,113 +1,77 @@
 import java.io.*;
 import java.util.*;
-public class Main {
+public class Main{
+	
 	static int N, L, ans;
 	static int[][] board;
 	
+	static boolean check(int x, int y, boolean column) {
+		int[] arr = new int[N]; // 사용할 행 or 열을 1차원 배열로 선언
+        boolean[] isused = new boolean[N]; // 경사로 사용여부 저장
+        for (int i = 0; i < N; i++) {
+            if (!column) { // 행일경우
+                arr[i] = board[x][i];
+            } else { // 열일경우
+                arr[i] = board[i][y];
+            }
+        }
+ 
+        for (int i = 0; i < N-1; i++) { 
+        	// 같을경우 pass
+            if (arr[i] == arr[i + 1]) continue;
+            
+            // 높이가 2 이상 차이날떄
+            if (Math.abs(arr[i] - arr[i + 1]) > 1) return false; 
+            
+            // 올라가는 경우
+            if (arr[i] - 1 == arr[i + 1]) { 
+            	// 다음 수부터 L번째까지 확인
+                for (int j = i + 1; j <= i + L; j++) {
+                	// 만약 범위를 벗어나거나, 경사로로 썼거나, 값이 달라지는 경우
+                    if (j >= N || isused[j] || arr[i + 1] != arr[j]) return false;
+                    
+                    // 조건 만족 시 경사로 사용
+                    isused[j] = true;
+                } 
+            }
+            // 내려가는 경우
+            else { 
+            	// 이전수를 확인
+            	for (int j = i; j >= i-L+1; j--) {
+            		// 범위를 벗어나거나, 경사로로 썼거나, 값이 달라지는 경우
+            		if(j <0 || isused[j] || arr[i] != arr[j]) return false;
+            		
+            		// 경사로 사용
+            		isused[j] = true;
+            	}
+            }
+        }
+        return true;
+	}
+	
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st= new StringTokenizer(br.readLine(), " ");
-		StringBuilder sb = new StringBuilder();
-//		int T = Integer.parseInt(br.readLine());
-//		for(int tc = 1; tc <= T; tc++) {
-			/*
-			 * 
-			 * 	경사로는 낮은 칸에 놓으며, L개의 연속된 칸에 경사로의 바닥이 모두 접해야 한다.
-				낮은 칸과 높은 칸의 높이 차이는 1이어야 한다.
-				경사로를 놓을 낮은 칸의 높이는 모두 같아야 하고, L개의 칸이 연속되어 있어야 한다.
-				아래와 같은 경우에는 경사로를 놓을 수 없다.
-				
-				
-				
-				
-				
-			 */
-			
-//			sb.append("#"+tc+" ").append(ans==Integer.MAX_VALUE?"GAME OVER":ans).append("\n");
-//		}
+		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 		
 		N = Integer.parseInt(st.nextToken());
 		L = Integer.parseInt(st.nextToken());
 		ans = 0;
-		board = new int[N][N];
-		for(int i = 0 ; i < N; i++) {
-			st= new StringTokenizer(br.readLine(), " ");
-			for(int j = 0 ; j < N; j++) {
+		
+		board = new int [N][N];
+		
+		for(int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine(), " ");
+			for(int j= 0; j < N; j++) {
 				board[i][j] = Integer.parseInt(st.nextToken());
 			}
-			solve(board[i]);
 		}
 		
-		for(int j = 0; j < N; j++) {
-			int [] temp = new int[N];
-			for(int i = 0 ; i < N; i++) {
-				temp[i] = board[i][j];
-			}
-			solve(temp);
+		for(int i = 0; i< N; i++) {
+			if(check(i, 0, false)) ans++;
+			if(check(0, i, true)) ans++;
 		}
 		
 		System.out.println(ans);
 		br.close();
-	}
-	
-	static void solve(int[] arr) {
-		// 경사로를 놓은 곳에 또 경사로를 놓는 경우 -> 설치 처리
-		boolean [] v = new boolean[N];
-		int index = 0;
-		while(index < N-1) {
-			// 낮은 칸과 높은 칸의 높이 차이가 1이 아닌 경우
-			if(Math.abs(arr[index] - arr[index+1]) >= 2) return;
-			
-			else if(arr[index] == arr[index+1]) {
-				index++;
-				continue;
-			}
-			
-			// 작아지는 경우
-			if(arr[index] > arr[index+1]) {
-				// 경사로를 놓다가 범위를 벗어나는 경우
-				if(index + L >= N) return;
-				
-				// index+1 부터 index+L 까지 공간 확보 되어야함
-				// 낮은 지점의 칸의 높이가 모두 같지 않거나, L개가 연속되지 않은 경우
-				for(int l = 1; l < L; l++) {
-					if(arr[index+l] != arr[index+l+1]) { // 다르다면 적합하지 않음
-						return;
-					}
-				}
-				
-				// 공간 확보 된 상태 - 방문처리(설치)
-				for(int l = 1; l <= L; l++) v[index+l] = true;
-				index += L;
-				
-				continue;
-			}
-
-			// 커지는 경우
-			else if (arr[index] < arr[index+1]) {
-				// 경사로를 놓다가 범위를 벗어나는 경우
-				if(index - L +1 < 0) return;
-				
-				// 설치한 경우 제외
-				for(int l = 0; l < L; l++) {
-					if(v[index-l]) return;
-				}
-				
-				// index 부터 index-L+1 까지 공간 확보 되어야함
-				// 낮은 지점의 칸의 높이가 모두 같지 않거나, L개가 연속되지 않은 경우
-				for(int l = 0; l < L-1; l++) {
-					if(arr[index-l] != arr[index-l-1]) { // 다르다면 적합하지 않음
-						return;
-					}
-				}
-				
-				// 공간 확보 된 상태 - 방문처리(설치)
-				for(int l = index; l >= index-L+1; l--) v[l] = true;
-				index++;
-				
-				continue;
-			}
-		}
-		ans++;
 	}
 }

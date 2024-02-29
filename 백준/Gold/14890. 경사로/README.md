@@ -4,11 +4,15 @@
 
 ### 성능 요약
 
-메모리: 12828 KB, 시간: 100 ms
+메모리: 12868 KB, 시간: 96 ms
 
 ### 분류
 
 구현
+
+### 제출 일자
+
+2023년 2월 18일 09:41:21
 
 ### 문제 설명
 
@@ -53,7 +57,7 @@
 
 <p>가장 위에 주어진 그림 예의 경우에 지나갈 수 있는 길은 파란색으로, 지나갈 수 없는 길은 빨간색으로 표시되어 있으며, 아래와 같다. 경사로의 길이 L = 2이다.</p>
 
-<p style="text-align:center"><img alt="" src="https://upload.acmicpc.net/255e47cf-0988-4b7f-b81c-2742f010a4c5/-/preview/" style="width: 338px; height: 338px;"></p>
+<p style="text-align:center"><img alt="" src="" style="width: 338px; height: 338px;"></p>
 
 <p>지도가 주어졌을 때, 지나갈 수 있는 길의 개수를 구하는 프로그램을 작성하시오.</p>
 
