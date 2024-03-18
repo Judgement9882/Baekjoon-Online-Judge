@@ -1,105 +1,124 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
-    static int[] dr = {-1,0,1,0}; // 상우하좌
-    static int[] dc = {0,1,0,-1}; // 상우하좌
-    
-    static int N, min;
-    static boolean[][] v;
-    static int[][] map;
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
-        map = new int[N][N];
-        
-        for(int i=0; i<N; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            for(int j=0; j<N; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-            }
-        }
-        
-        // 섬 번호 붙이기
-        v = new boolean[N][N];
-        int num = 2;
-        for(int i=0; i<N; i++) {
-            for(int j=0; j<N; j++) {
-                if(map[i][j]==1) {
-                    bfsNum(i, j, num);
-                    num++;
-                }
-            }
-        }
-        
-        // 다리 놓기 - 다리 최소값 찾기
-        min = Integer.MAX_VALUE;
-        for(int i=0; i<N; i++) {
-            v = new boolean[N][N];
-            for(int j=0; j<N; j++) {
-                if(!v[i][j] && map[i][j]>1) {
-                    bfsBridge(i, j, map[i][j]);
-                }
-            }
-        }
-        System.out.println(min);
-    }
-    
-    static void bfsNum(int i, int j, int num) {
-        ArrayDeque<int[]> q = new ArrayDeque<>();
-        v[i][j] = true;
-        q.offer(new int[] {i,j});
-        map[i][j] = num;
-        
-        while(!q.isEmpty()) {
-            int[] pos = q.poll();
-            
-            for(int d=0; d<4; d++) {
-                int ni = pos[0] + dr[d];
-                int nj = pos[1] + dc[d];
-                
-                if(0<=ni&&ni<N && 0<=nj&&nj<N && !v[ni][nj] && map[ni][nj]==1) {
-                    v[ni][nj] = true;
-                    q.offer(new int[] {ni,nj});
-                    map[ni][nj] = num;
-                }
-            }
-        }
-    }
-    
-    static void bfsBridge(int i, int j, int start) {
-        ArrayDeque<int[]> q = new ArrayDeque<>();
-        v[i][j] = true;
-        q.offer(new int[] {i,j});
-        
-        int size=0, depth=0;
-        while(!q.isEmpty()) {
-            size = q.size();
-            
-            while(size > 0) {
-                int[] pos = q.poll();
-                
-                for(int d=0; d<4; d++) {
-                    int ni = pos[0] + dr[d];
-                    int nj = pos[1] + dc[d];
-                    
-                    // 범위 안에 있고, 방문하지 않았으면
-                    if(0<=ni&&ni<N && 0<=nj&&nj<N && !v[ni][nj]) {
-                        // 섬이고, 출발한 섬과 다른 섬이면
-                        if(map[ni][nj] != 0 && start != map[ni][nj] ) {
-                            min = Math.min(min, depth);
-                            q.clear();
-                            return;
-                        }
-                        else if(map[ni][nj] ==0) { // 바다이면 큐에 추가
-                            v[ni][nj] = true;
-                            q.offer(new int[] {ni,nj});
-                        }
-                    }
-                }
-                size--;
-            }
-            depth++;
-        }
-    }
+public class Main{
+	static int N, ans;
+	static int[][] board, temp_board;
+	static int[] dx = {0, 1, 0, -1}, dy = {1, 0, -1, 0};
+	static List<int[]> island;
+	static ArrayDeque<int[]> q = new ArrayDeque<>();
+	
+	
+	static void copy_board(){
+		temp_board = new int[N][N];
+		for(int i = 0 ; i < N; i++) {
+			for(int j = 0 ; j < N; j++) {
+				temp_board[i][j] = board[i][j];
+			}
+		}
+	}
+	
+	static void solve() {
+		for(int[] m : island) {
+			copy_board();
+			int x = m[0], y = m[1];
+			int color = board[x][y]; // 해당 영역의 색깔
+
+			temp_board[x][y] = 1;
+			q.offer(new int[] {x, y});
+			while(!q.isEmpty()) {
+//				if(x == 4 && y == 3) {
+//					System.out.println();
+//					for(int i = 0 ; i < N; i++) {
+//						for(int j = 0 ; j < N; j++) {
+//							System.out.print(temp_board[i][j] + "  ");
+//						}
+//						System.out.println();
+//					}
+//					System.out.println("ans : " + ans);
+//					System.out.println();
+//				}
+				
+				int cur[] = q.poll();
+				for(int dir = 0 ;dir < 4;dir++) {
+					int nx = cur[0] + dx[dir];
+					int ny = cur[1] + dy[dir];
+					
+					if(nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
+					// 같은 영역이면 패스
+					if(temp_board[nx][ny] == color) continue;
+					// 이미 다리를 두려고 계획중이라면
+					if(temp_board[nx][ny] > 0) continue;
+					
+					// 다른 영역의 대륙에 도달했다면
+					if(temp_board[nx][ny] < 0) {
+						ans = Math.min(ans, temp_board[cur[0]][cur[1]]-1);
+						q.clear();
+						break;
+					}
+					
+					temp_board[nx][ny] = temp_board[cur[0]][cur[1]]+1;
+//					// 최소 다리 길이를 넘어선다면
+//					if(ans < temp_board[nx][ny]+1) {
+//						q.clear();
+//						break;
+//					}
+					q.offer(new int[] {nx, ny});
+				}
+			}
+			
+		}
+	}
+	
+	static void bfs(int x, int y, int color) {
+		board[x][y] = color;
+		q.offer(new int[] {x, y});
+		while(!q.isEmpty()) {
+			int cur[] = q.poll();
+			for(int dir = 0 ;dir < 4;dir++) {
+				int nx = cur[0] + dx[dir];
+				int ny = cur[1] + dy[dir];
+				
+				if(nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
+				if(board[nx][ny] != -1) continue;
+				
+				board[nx][ny] = color;
+				q.offer(new int[] {nx, ny});
+			}
+		}
+	}
+	
+	public static void main(String[] args) throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+		
+		N = Integer.parseInt(st.nextToken());
+		
+		board= new int[N][N];
+		island = new ArrayList<>();
+		for(int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine(), " ");
+			for(int j = 0;j < N; j++) {
+				// 육지는 -1
+				board[i][j] = -Integer.parseInt(st.nextToken());
+				if(board[i][j]==-1) island.add(new int[] {i, j});
+			}
+		}
+		
+		// 같은 영역 확인
+		int area = -2;
+		for(int i = 0 ; i < N; i++) {
+			for(int j = 0 ; j < N; j++) {
+				if(board[i][j] == -1) {
+					bfs(i, j, area--);
+				}
+			}
+		}
+		
+		
+		ans = Integer.MAX_VALUE;
+		solve();
+		System.out.println(ans);
+		br.close();
+	}
 }
