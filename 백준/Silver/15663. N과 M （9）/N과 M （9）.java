@@ -6,15 +6,15 @@ public class Main {
     static int[] arr, selected;
     static boolean[] vis; // 순열에만 필요
     static StringBuilder sb = new StringBuilder();
-    static HashSet<String> set = new HashSet<>();
+//    static HashSet<String> set = new HashSet<>();
     static void perm(int cnt){
         if(cnt == M){
-            StringBuilder temp = new StringBuilder();
-            for(int j = 0; j < M; j++){
-                temp.append(selected[j]).append(" ");
-            }
-            if(set.contains(temp.toString())) return;
-            set.add(temp.toString());
+//            StringBuilder temp = new StringBuilder();
+//            for(int j = 0; j < M; j++){
+//                temp.append(selected[j]).append(" ");
+//            }
+//            if(set.contains(temp.toString())) return;
+//            set.add(temp.toString());
 
             for(int j = 0; j < M; j++){
                 sb.append(selected[j]).append(" ");
@@ -23,10 +23,12 @@ public class Main {
             return;
         }
 
+        int temp = 0; // 중복 수열 확인 변수
         for(int i = 0; i < N; i++){
-            if(vis[i]) continue;
+            if(vis[i] || temp == arr[i]) continue;
             vis[i] = true;
             selected[cnt] = arr[i];
+            temp = arr[i];
             perm(cnt+1);
             vis[i] = false;
         }
