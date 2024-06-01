@@ -1,4 +1,3 @@
-// https://blog.encrypted.gg/499 참고
 #include <iostream>
 using namespace std;
 int main() {
