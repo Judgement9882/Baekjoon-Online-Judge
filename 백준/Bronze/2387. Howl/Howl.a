@@ -1,9 +1,9 @@
   print(("                     .",newline));
-  print(("                    / V\",newline));
+print(("                    / V\",newline));
   print(("                  / `  /",newline));
-  print(("                 <<   |",newline));
+print(("                 <<   |",newline));
   print(("                 /    |",newline));
-  print(("               /      |",newline));
+print(("               /      |",newline));
   print(("             /        |",newline));
   print(("           /    \  \ /",newline));
   print(("          (      ) | |",newline));
